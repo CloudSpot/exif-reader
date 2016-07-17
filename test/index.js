@@ -1,12 +1,12 @@
 var exif = require('../');
 var fs = require('fs');
-var assert = require('assert');
+var expect = require('unexpected');
 var tetons = fs.readFileSync(__dirname + '/data/tetons.exif');
 var IMG_0774 = fs.readFileSync(__dirname + '/data/IMG_0774.exif');
 
 describe('exif-reader', function() {
   it('should read tiff and exif data', function() {
-    assert.deepEqual(exif(tetons),
+    expect(exif(tetons), 'to equal',
       { image:
          { Make: 'Canon',
            Model: 'Canon EOS D60',
@@ -60,7 +60,7 @@ describe('exif-reader', function() {
   });
 
   it('should read gps data and other exif data', function() {
-    assert.deepEqual(exif(IMG_0774),
+    expect(exif(IMG_0774), 'to equal',
       { image:
          { Make: 'Apple',
            Model: 'iPhone 6',
@@ -123,18 +123,18 @@ describe('exif-reader', function() {
   });
 
   it('should error when missing Exif tag', function() {
-    assert.throws(function() {
+    expect(function() {
       exif(new Buffer(50));
-    }, /buffer should start with "Exif"/);
+    }, 'to throw', /buffer should start with "Exif"/);
   });
 
   it('should error when missing byte order marker', function() {
-    assert.throws(function() {
+    expect(function() {
       exif(new Buffer('Exif\0\0IM'));
-    }, /expected byte order marker/);
+    }, 'to throw', /expected byte order marker/);
 
-    assert.throws(function() {
+    expect(function() {
       exif(new Buffer('Exif\0\0MI'));
-    }, /expected byte order marker/);
+    }, 'to throw', /expected byte order marker/);
   });
 });
