@@ -36,13 +36,13 @@ module.exports = function(buffer) {
   }
 
   if (ifd0) {
-    if (ifd0.ExifOffset)
+    if (typeof ifd0.ExifOffset === 'number')
       result.exif = readTags(buffer, ifd0.ExifOffset + 6, bigEndian, tags.exif);
 
-    if (ifd0.GPSInfo)
+    if (typeof ifd0.GPSInfo === 'number')
       result.gps = readTags(buffer, ifd0.GPSInfo + 6, bigEndian, tags.gps);
 
-    if (ifd0.InteropOffset)
+    if (typeof ifd0.InteropOffset === 'number')
       result.interop = readTags(buffer, ifd0.InteropOffset + 6, bigEndian, tags.exif);
   }
   return result;
