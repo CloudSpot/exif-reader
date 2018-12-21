@@ -38,13 +38,13 @@ module.exports = function(buffer) {
   if (ifd0) {
     if (ifd0.ExifOffset)
       result.exif = readTags(buffer, ifd0.ExifOffset + 6, bigEndian, tags.exif);
-    
+
     if (ifd0.GPSInfo)
       result.gps = readTags(buffer, ifd0.GPSInfo + 6, bigEndian, tags.gps);
-    
+
     if (ifd0.InteropOffset)
       result.interop = readTags(buffer, ifd0.InteropOffset + 6, bigEndian, tags.exif);
-  } 
+  }
   return result;
 };
 
@@ -89,7 +89,11 @@ function readTag(buffer, offset, bigEndian) {
   if (buffer.length < offset + 7) {
     return null;
   }
+
   var type = readUInt16(buffer, offset, bigEndian);
+
+  if (!type || type > SIZE_LOOKUP.length) return null;
+
   var numValues = readUInt32(buffer, offset + 2, bigEndian);
   var valueSize = SIZE_LOOKUP[type - 1];
   var valueOffset;
@@ -102,7 +106,7 @@ function readTag(buffer, offset, bigEndian) {
       return null;
     }
   }
-  
+
   // Special case for ascii strings
   if (type === 2) {
     var string = buffer.toString('ascii', valueOffset, valueOffset + numValues);
